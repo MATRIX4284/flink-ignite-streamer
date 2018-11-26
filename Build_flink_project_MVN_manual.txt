@@ -1,0 +1,17 @@
+Install maven:
+sudo apt-get install maven
+
+Create a Project using mvn
+mvn archetype:generate                               \
+      -DarchetypeGroupId=org.apache.flink              \
+      -DarchetypeArtifactId=flink-quickstart-scala     \
+      -DarchetypeVersion=1.6.0
+
+name your Group Id and Artifact Id ,version and name pf package
+
+To Build the packAGE USE :
+mvn clean package
+
+
+
+

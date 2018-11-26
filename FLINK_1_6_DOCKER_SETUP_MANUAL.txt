@@ -1,0 +1,86 @@
+1.Download the docker image for Only Flink 1.6 from
+
+https://docs.docker.com/samples/library/flink/
+
+1.6.0-scala_2.11-alpine, 1.6-scala_2.11-alpine, scala_2.11-alpine, 1.6.0-alpine, 1.6-alpine, alpine (1.6/scala_2.11-alpine/Dockerfile)
+
+
+2.Go to the folder:
+cd /home/system/FLINK/docker-flink-be6d529f5681437b308398db6f5f50f02c5d5ca3/1.6/scala_2.11-debian
+
+For Running Flink as localhost:
+
+1.
+
+docker run --name flink_local -p *8089:**8081 -t flink local
+
+**Application port
+*the port exposed to view for http
+
+2.
+Go To localhost:8089 to see the Web UI of the Flink Job Manager.
+
+3.Submit the jar file as Flink Jar.
+
+
+
+For Running Flink in Clusterted System :
+
+1.Install Docker Compose:
+
+sudo apt install docker-compose
+
+2.See https://docs.docker.com/samples/library/flink/#running-a-cluster-using-docker-compose
+for the docker-compose.yml for flink
+
+
+E.G.:A docker-compose.yml template is given below:
+
+The things to edit is mentioned by -- comment.
+
+version: "2" --Keep the version number to 2
+services:
+  jobmanager:
+    image: flink --The image name of the flink docker from the docker command : docker ps
+    expose:
+      - "6123"
+    ports:
+      - "8094:8081" --Ports to expose for the Job Manager Console of Flink.8094 is the port of the machine that will host.8081 is the port of Flink Application side.
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
+  taskmanager:
+    image: flink
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    links:
+      - "jobmanager:jobmanager"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
+3.Save the docker-compose.yml in the folder:
+cd /home/system/FLINK/docker-flink-be6d529f5681437b308398db6f5f50f02c5d5ca3/1.6/scala_2.11-debian
+
+4.Go to the directory:
+cd /home/system/FLINK/docker-flink-be6d529f5681437b308398db6f5f50f02c5d5ca3/1.6/scala_2.11-debian
+
+5.docker-compose up
+
+6. Go to localhost:8094 to see the Flink Console.
+
+7. To increase the number of Task Executors use the following command:
+
+docker-compose scale taskmanager=<N>
+
+Example:
+To create  3 taskmanagers use :
+docker-compose scale taskmanager=3
+
+
+
+
